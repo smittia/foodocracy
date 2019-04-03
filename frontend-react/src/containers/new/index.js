@@ -3,22 +3,37 @@ import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { trigger_new } from '../../library/api'
+//import { DateAndTimePickers } from './datetimepicker'
 
 class New extends React.Component {
   constructor(props) {
     super(props);
+    this.props = props
     this.state = {"name" : "", "time": ""};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
   handleSubmit(event) {
-    trigger_new(this.state.name, this.state.time)
+
+    let props = this.props
+    let update_function = function (response) {
+      console.log("hi");
+
+      // redirect to main page
+      props.returnHome()
+      console.log(response);
+    }
+    let error_function = function (error) {
+      // display error
+      console.log(error);
+    }
 
     // send to backend api
+    trigger_new(this.state.name, this.state.time, update_function, error_function)
 
-    // handle good and bad functions 
-
+    // spin will waiting
+    
     event.preventDefault();
   }
 
@@ -54,10 +69,6 @@ class New extends React.Component {
 }
 
 
-/*
-const New = props => (
-  
-)
 
 const mapStateToProps = ({}) => ({})
 
@@ -65,11 +76,12 @@ const mapStateToProps = ({}) => ({})
 const mapDispatchToProps = dispatch =>
   bindActionCreators(
     {
-      changePage: () => push('/about-us')
+      returnHome: () => push('/')
     },
     dispatch
   )
 
-*/
-
-export default New;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)( New );

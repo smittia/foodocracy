@@ -5,65 +5,109 @@ const get_restaurants_from_api = require('../lib/get_restaurants_from_api');
 
 module.exports = function(app, db) {
 
-  // gets all
   app.post('/new', (req, res) => {
 
-    const vote_object = { name: req.body.name, time_ending: req.body.time_ending };
-    const restaurants = parse_restaurants(get_restaurants_from_api())
+    let restaurant_promise = get_restaurants_from_api();
+    restaurant_promise.then((list) => {
+	    const restaurants = parse_restaurants(list)
 
-    console.log(vote_object)
-    db.collection('votes').insert(vote_object, (err, result) => {
-      if (err) { 
-        res.send({ 'error': 'An error has occurred' }); 
-      } else {
+    	let vote_object = { name: req.body.name,
+    	 time_ending: req.body.time_ending,
+    	 places: restaurants };
 
-      	let restaurant_object = {
-      		vote_id: result.ops[0]._id,
-      		restaurants: restaurants
-      	}
-
-
-        db.collection('restaurants').insert(restaurant_object, (err, result2) => {
+	    db.collection('votes').insert(vote_object, (err, result) => {
 	      if (err) { 
 	        res.send({ 'error': 'An error has occurred' }); 
 	      } else {
-	      	
-	        res.send(result.ops[0]);
+
+	      	res.send(result.ops[0]);
 	      }
 	    });
-      }
+	});
+  });
+
+  app.get('/all', (req, res) => {
+    db.collection('votes').find({}).toArray(function(err, result) {
+	      if (err) {
+	        res.send({'error':'An error has occurred'});
+	      } else {
+	        res.send(result);
+	      } 
+	  });
+  });
+
+  app.get('/vote/:id', (req, res) => {
+    const id = req.params.id;
+    const details = { '_id': new ObjectID(id) };
+    db.collection('votes').findOne(details, (err, item) => {
+      if (err) {
+        res.send({'error':'An error has occurred'});
+      } else {
+        res.send(item);
+      } 
     });
   });
-/*
-new(name, time)
-{
-	id = generate_id()
-	resturants = parse_restaurants(get_resturants_from_api())
-	restaurant_list[id] = resturants
-	vote_object = {
-		"name" : name,
-		"time_ending" : time,
-	}
-	votes[id] = vote_object
-}
 
-vote(user_id, restaurant_id, vote_id)
-{
-	vote_object = {restaurant_id : restaurant_id, user_id : user_id}
-	add_if_not_present( votes[vote_id].votes[restaurant_id], user_id )
-}
+  app.post('/addVote', (req, res) => {
+    const details = { '_id': new ObjectID(req.body.vote_id) };
+	db.collection('votes').findOne(details, (err, item) => {
+      if (err) {
+        res.send({'error':'An error has occurred'});
+      } else {
+      	console.log(item)
 
-unvote(user_id, restaurant_id, vote_id)
-{
-	remove_if_present( votes[vote_id].votes[restaurant_id], user_id )
-}
+        item.places.forEach(function (place, index) {
+			if(place.id === req.body.restaurant_id &&
+				!place.votes.includes(req.body.user_id))
+			{
+				place.votes.push(req.body.user_id)
+			}
+		})
 
-get_all(vote_id)
-{
-	returns a list of all the restaurants with their vote count
-	return get_restaurants(vote_id)
-}
-*/
+		var newvalues = { $set: {places: item.places} };
+		db.collection("votes").updateOne(details, newvalues, function(err, item) {
+		    if (err) {
+		    	console.log(err)
+		        res.send({'error':'An error has occurred'});
+		    } else {
+		        res.send(item);
+		    }
+	  	});
+      } 
+    });
+  });
+
+
+  app.post('/removeVote', (req, res) => {
+    const details = { '_id': new ObjectID(req.body.vote_id) };
+	db.collection('votes').findOne(details, (err, item) => {
+      if (err) {
+        res.send({'error':'An error has occurred'});
+      } else {
+      	console.log(item)
+
+        item.places.forEach(function (place, index) {
+			if(place.id === req.body.restaurant_id &&
+				place.votes.includes(req.body.user_id))
+			{
+				place.votes = place.votes.filter( e => e !== req.body.user_id)
+			}
+		})
+
+		var newvalues = { $set: {places: item.places} };
+		db.collection("votes").updateOne(details, newvalues, function(err, item) {
+		    if (err) {
+		    	console.log(err)
+		        res.send({'error':'An error has occurred'});
+		    } else {
+		        res.send(item);
+		    }
+	  	});
+      } 
+    });
+  });
+
+
 
 
 // Notes an example of how to do it correctly

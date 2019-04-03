@@ -4,6 +4,7 @@ import Home from '../home'
 import OldHome from '../home_old'
 import About from '../about'
 import New from '../new'
+import Vote from '../vote'
 
 const App = () => (
   <div>
@@ -16,6 +17,7 @@ const App = () => (
       <Route exact path="/about-us" component={About} />
       <Route exact path="/new" component={New} />
       <Route exact path="/old" component={OldHome} />
+      <Route exact path="/vote" component={Vote} />
 
     </main>
   </div>
