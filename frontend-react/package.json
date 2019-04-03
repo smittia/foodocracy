@@ -13,14 +13,17 @@
   "devDependencies": {
     "material-ui": "^0.20.2",
     "prettier": "1.16.4",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "react-time-picker": "^3.5.1"
   },
   "proxy": "http://localhost:8000",
   "dependencies": {
     "axios": "^0.18.0",
     "connected-react-router": "4.5.0",
+    "dateformat": "^3.0.3",
     "js-cookie": "^2.2.0",
     "react": "16.8.6",
+    "react-datetime-picker": "^2.3.0",
     "react-dom": "16.8.6",
     "react-redux": "5.1.1",
     "react-router": "4.4.0-beta.8",

@@ -4,13 +4,15 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { get_vote, trigger_vote, trigger_unvote } from '../../library/api'
 import { get_session_id } from '../../library/session'
+import dateFormat from 'dateformat';
+
 
 class Vote extends React.Component {
   constructor(props) {
     super(props);
     this.props = props
     let id = props.location.search.substring(1)
-    this.state = {"name" : "", "voted_places" : [], "unvoted_places" : [], "id" : id, "user" : ""};
+    this.state = {name : "", voted_places : [], unvoted_places : [], id : id, user : "", time_ending : "", expired : false};
     this.handleVote = this.handleVote.bind(this);
     this.handleUnVote = this.handleUnVote.bind(this);
     this.updateState = this.updateState.bind(this);
@@ -34,29 +36,35 @@ class Vote extends React.Component {
 
     let user = get_session_id()
 
+    let time = new Date(data.data.time_ending)
+    let expired = time < new Date()
+
     this.setState({name : data.data.name, voted_places : voted_places,
-      unvoted_places: unvoted_places, user : user});
+      unvoted_places: unvoted_places, user : user, time_ending : dateFormat(time, "dddd, mmmm dS, yyyy, h:MM:ss TT"), expired:expired});
   }
 
   handleVote(place) {
-    let id = place.id
-    let updateState = this.updateState()
-    let update_function =  (response) => {
-      console.log("hi");
-      this.updateState()
-      console.log(response);
-    }
-    let error_function = function (error) {
-      // display error
-      console.log(error);
-    }
-    if(place.votes.includes(this.state.user))
+    if(!this.state.expired)
     {
-      trigger_unvote(id, this.state.id, this.state.user, update_function, error_function)
-    }
-    else
-    {
-      trigger_vote(id, this.state.id, this.state.user, update_function, error_function)
+      let id = place.id
+      let updateState = this.updateState()
+      let update_function =  (response) => {
+        console.log("hi");
+        this.updateState()
+        console.log(response);
+      }
+      let error_function = function (error) {
+        // display error
+        console.log(error);
+      }
+      if(place.votes.includes(this.state.user))
+      {
+        trigger_unvote(id, this.state.id, this.state.user, update_function, error_function)
+      }
+      else
+      {
+        trigger_vote(id, this.state.id, this.state.user, update_function, error_function)
+      }
     }
   }
 
@@ -96,8 +104,9 @@ class Vote extends React.Component {
 
     return (
       <div>
-        <h1>Vote on {this.state.name}</h1>
+        <h1>Vote on {this.state.name} ending at {this.state.time_ending}</h1>
         <h2>Vote as {this.state.user}</h2>
+        {this.state.expired && <h2>EXPIRED</h2>}
 
         <h3>Voted</h3>
         <div>{votedListItems}</div>

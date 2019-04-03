@@ -3,15 +3,18 @@ import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { trigger_new } from '../../library/api'
-//import { DateAndTimePickers } from './datetimepicker'
+import DateTimePicker from 'react-datetime-picker'
 
 class New extends React.Component {
   constructor(props) {
     super(props);
     this.props = props
-    this.state = {"name" : "", "time": ""};
+    let date = new Date();
+    date.setHours(date.getHours()+2)
+    this.state = {"name" : "", "date": date};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleTimeChange = this.handleTimeChange.bind(this);
   }
 
   handleSubmit(event) {
@@ -30,7 +33,7 @@ class New extends React.Component {
     }
 
     // send to backend api
-    trigger_new(this.state.name, this.state.time, update_function, error_function)
+    trigger_new(this.state.name, this.state.date, update_function, error_function)
 
     // spin will waiting
     
@@ -43,6 +46,11 @@ class New extends React.Component {
     this.setState({
       [target.name]: target.value
     });
+  }
+
+  handleTimeChange(date) {
+    console.log(date)
+   this.setState({ date })
   }
 
   render() {
@@ -58,7 +66,7 @@ class New extends React.Component {
 
           <div>
             <label htmlFor="time">End time</label>
-            <input type="text" name="time" value={this.state.time} id="time" onChange={this.handleInputChange}/>
+            <DateTimePicker type="text" name="time" value={this.state.date} id="date" onChange={this.handleTimeChange}/>
           </div>
 
           <input type="submit" value="Submit" />
