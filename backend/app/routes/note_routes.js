@@ -7,7 +7,7 @@ module.exports = function(app, db) {
 
   app.post('/new', (req, res) => {
 
-    let restaurant_promise = get_restaurants_from_api();
+    let restaurant_promise = get_restaurants_from_api(req.body.lat, req.body.long);
     restaurant_promise.then((list) => {
 	    const restaurants = parse_restaurants(list)
 

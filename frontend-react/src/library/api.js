@@ -2,11 +2,11 @@
 const qs = require('qs');
 const axios = require('axios');
 
-function trigger_new(name, time, update_function, error_function)
+function trigger_new(name, time, lat, long, update_function, error_function)
 {
 	console.log(name)
 	console.log(time)
-	axios.post('/new', qs.stringify({ name: name, time_ending: time }))
+	axios.post('/new', qs.stringify({ name: name, time_ending: time, lat : lat, long : long }))
 	  .then(update_function)
 	  .catch(error_function);
 }
