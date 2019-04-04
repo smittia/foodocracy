@@ -45,6 +45,7 @@ class Location extends React.Component {
   }
 
   render() {
+
     return (
       <div>
         <h1>Add location</h1>

@@ -47,8 +47,8 @@ class Vote extends React.Component {
     if(!this.state.expired)
     {
       let id = place.id
-      let updateState = this.updateState()
-      let update_function =  (response) => {
+      this.updateState()
+      let update_function = (response) => {
         console.log("hi");
         this.updateState()
         console.log(response);
@@ -68,19 +68,6 @@ class Vote extends React.Component {
     }
   }
 
-  handleUnVote(id) {
-    let update_function = function (response) {
-      console.log("hi");
-      //updateState()
-      console.log(response);
-    }
-    let error_function = function (error) {
-      // display error
-      console.log(error);
-    }
-    this.updateState()
-  }
-
   render() {
 
 
@@ -88,9 +75,9 @@ class Vote extends React.Component {
         const user = this.state.user
         const ticks = place.votes.map((vote) => {
           if(vote === user){
-            return (<span key={vote}>✔</span>)
+            return (<span key={vote} title={vote} >✔</span>)
           } else {
-            return (<span key={vote}>✓</span>)
+            return (<span key={vote} title={vote} >✓</span>)
           }
         })
 

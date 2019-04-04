@@ -6,6 +6,7 @@ module.exports = function(restuarant_list ) {
 			title: place.title,
 			distance: place.distance,
 			id: place.id,
+			favourite: false,
 			votes:[]
 		})
 	});

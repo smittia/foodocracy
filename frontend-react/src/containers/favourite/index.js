@@ -2,21 +2,18 @@ import React from 'react'
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { trigger_new, get_locations } from '../../library/api'
-import DateTimePicker from 'react-datetime-picker'
+import { trigger_favourite_add, get_locations } from '../../library/api'
 
-class New extends React.Component {
+class Favourite extends React.Component {
   constructor(props) {
     super(props);
     this.props = props
-    let date = new Date();
-    date.setHours(date.getHours()+2)
-    this.state = {name : "", date: date, lat : "", long : "", custom : true, location_name: 'custom', location_list : []};
+    this.state = {name : "", location : "", distance : "", location_list:[]};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleTimeChange = this.handleTimeChange.bind(this);
-    this.handleLocationChange = this.handleLocationChange.bind(this);
     this.updateLocation = this.updateLocation.bind(this);
+    this.handleLocationChange = this.handleLocationChange.bind(this);
+
   }
 
   async componentWillMount() {
@@ -28,6 +25,21 @@ class New extends React.Component {
     {
       this.updateLocation(data.data[0].name)
     }
+  }
+
+  updateLocation(location_name) {
+    var location = this.state.location_list.filter((location) => location.name === location_name)
+    if(location.length !== 0)
+    {
+      this.setState({
+        location: location_name,
+      });
+    }
+  }
+
+  handleLocationChange(event) {
+    let location = event.target.value
+    this.updateLocation(location)
   }
 
   handleSubmit(event) {
@@ -46,7 +58,7 @@ class New extends React.Component {
     }
 
     // send to backend api
-    trigger_new(this.state.name, this.state.date, this.state.location_name, this.state.lat, this.state.long, update_function, error_function)
+    trigger_favourite_add(this.state.name, this.state.location, this.state.distance, update_function, error_function)
 
     // spin will waiting
     
@@ -61,39 +73,6 @@ class New extends React.Component {
     });
   }
 
-  handleTimeChange(date) {
-    console.log(date)
-   this.setState({ date })
-  }
-
-  updateLocation(location_name) {
-     if (location_name === "custom") 
-    {
-      this.setState({
-        custom: true,
-        location_name: location_name,
-      })
-    }
-    else
-    {
-      var location = this.state.location_list.filter((location) => location.name === location_name)
-      if(location.length !== 0)
-      {
-        this.setState({
-          location_name: location_name,
-          custom: false,
-          lat: location[0].lat,
-          long: location[0].long,
-        });
-      }
-    }
-  }
-
-  handleLocationChange(event) {
-    let location = event.target.value
-    this.updateLocation(location)
-  }
-
   render() {
 
     const location_options = this.state.location_list.map((location) =>
@@ -102,7 +81,7 @@ class New extends React.Component {
 
     return (
       <div>
-        <h1>New</h1>
+        <h1>Add location</h1>
 
         <form onSubmit={this.handleSubmit}>
           <div>
@@ -111,26 +90,15 @@ class New extends React.Component {
           </div>
 
           <div>
-            <label htmlFor="time">End time</label>
-            <DateTimePicker type="text" name="time" value={this.state.date} id="date" onChange={this.handleTimeChange}/>
-          </div>
-
-          <div>
             <label htmlFor="location">Location</label>
             <select name="location" onChange={this.handleLocationChange} value={this.state.location_name}>
               {location_options}
-              <option value="custom">Custom</option>
             </select>
           </div>
 
           <div>
-            <label htmlFor="name">Latitude</label>
-            <input disabled={!this.state.custom} type="text" name="lat" value={this.state.lat} id="lat" onChange={this.handleInputChange}/>
-          </div>
-
-          <div>
-            <label htmlFor="name">Longitude</label>
-            <input disabled={!this.state.custom} type="text" name="long" value={this.state.long} id="long" onChange={this.handleInputChange}/>
+            <label htmlFor="name">Distance from (m)</label>
+            <input type="text" name="distance" value={this.state.long} id="distance" onChange={this.handleInputChange}/>
           </div>
 
           <input type="submit" value="Submit" />
@@ -156,4 +124,4 @@ const mapDispatchToProps = dispatch =>
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)( New );
+)( Favourite );

@@ -28,25 +28,59 @@ module.exports = function(app, db) {
 	  });
   });
 
+  app.post('/favourite', (req, res) => {
+
+	const favourite = { name: req.body.name, location: req.body.location, distance:req.body.distance };
+
+    db.collection('favourites').insert(favourite, (err, result) => {
+      if (err) { 
+        res.send({ 'error': 'An error has occurred' }); 
+      } else {
+        res.send(result.ops[0]);
+      }
+    });
+  });
+
   app.post('/new', (req, res) => {
 
     let restaurant_promise = get_restaurants_from_api(req.body.lat, req.body.long);
     restaurant_promise.then((list) => {
-	    const restaurants = parse_restaurants(list)
 
-    	let vote_object = { name: req.body.name,
-    	 time_ending: req.body.time_ending,
-    	 places: restaurants };
+    	let restaurants = parse_restaurants(list)
 
-	    db.collection('votes').insert(vote_object, (err, result) => {
-	      if (err) { 
-	        res.send({ 'error': 'An error has occurred' }); 
+    	let location_request = {location : req.body.location}
+  		db.collection('favourites').find(location_request).toArray(function(err, favourites) {
+	      if (err) {
+		        res.send({'error':'An error has occurred'});
 	      } else {
+		    favourites.forEach(
+		    	function(favourite, index) {
+					restaurants.push(
+					{
+						title: favourite.name,
+						distance: favourite.distance,
+						favourite: true,
+						id: favourite._id,
+						votes:[]
+					})
+				}
+	    	)
 
-	      	res.send(result.ops[0]);
-	      }
-	    });
-	});
+	    	let vote_object = { name: req.body.name,
+	    	 time_ending: req.body.time_ending,
+	    	 places: restaurants };
+
+		    db.collection('votes').insert(vote_object, (err, result) => {
+		      if (err) { 
+		        res.send({ 'error': 'An error has occurred' }); 
+		      } else {
+
+		      	res.send(result.ops[0]);
+		      }
+		    });
+		  }
+		});
+  	});
   });
 
   app.get('/all', (req, res) => {
