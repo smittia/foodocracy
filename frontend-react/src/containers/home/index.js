@@ -29,6 +29,12 @@ class Home extends React.Component {
           <button onClick={() => this.props.changePage('new')}>
             Create new vote
           </button>
+          <button onClick={() => this.props.changePage('location')}>
+            Create new location
+          </button>
+          <button onClick={() => this.props.changePage('favourite')}>
+            Add favourite place
+          </button>
         </p>
         <div>{listItems}</div>
       </div>

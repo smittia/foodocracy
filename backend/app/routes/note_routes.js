@@ -5,6 +5,29 @@ const get_restaurants_from_api = require('../lib/get_restaurants_from_api');
 
 module.exports = function(app, db) {
 
+  app.post('/location', (req, res) => {
+
+	const location = { name: req.body.name, lat: req.body.lat, long:req.body.long };
+
+    db.collection('locations').insert(location, (err, result) => {
+      if (err) { 
+        res.send({ 'error': 'An error has occurred' }); 
+      } else {
+        res.send(result.ops[0]);
+      }
+    });
+  });
+
+  app.get('/locations', (req, res) => {
+    db.collection('locations').find({}).toArray(function(err, result) {
+	      if (err) {
+	        res.send({'error':'An error has occurred'});
+	      } else {
+	        res.send(result);
+	      } 
+	  });
+  });
+
   app.post('/new', (req, res) => {
 
     let restaurant_promise = get_restaurants_from_api(req.body.lat, req.body.long);

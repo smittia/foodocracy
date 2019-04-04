@@ -30,11 +30,29 @@ function trigger_unvote(restaurant_id, vote_id, user_id, update_function, error_
 	  .catch(error_function);
 }
 
+function trigger_location_add(name, lat, long, update_function, error_function)
+{
+	axios.post('/location', qs.stringify({ name: name, lat : lat, long : long }))
+	  .then(update_function)
+	  .catch(error_function);
+}
 
 async function get_vote_list()
 {
 	  try {
 	    const response = await axios.get('/all');
+	    console.log(response);
+	    return response
+	  } catch (error) {
+	    console.error(error);
+	    return [];
+	  }
+}
+
+async function get_locations()
+{
+	  try {
+	    const response = await axios.get('/locations');
 	    console.log(response);
 	    return response
 	  } catch (error) {
@@ -55,4 +73,4 @@ async function get_vote(vote_id)
 	  }
 }
 
-export { trigger_new, trigger_vote, trigger_unvote, get_vote, get_vote_list };
+export { trigger_new, trigger_vote, trigger_unvote, get_vote, get_vote_list, trigger_location_add, get_locations };

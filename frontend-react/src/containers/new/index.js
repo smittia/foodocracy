@@ -2,7 +2,7 @@ import React from 'react'
 import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { trigger_new } from '../../library/api'
+import { trigger_new, get_locations } from '../../library/api'
 import DateTimePicker from 'react-datetime-picker'
 
 const LOCATIONS = {
@@ -16,11 +16,23 @@ class New extends React.Component {
     this.props = props
     let date = new Date();
     date.setHours(date.getHours()+2)
-    this.state = {"name" : "", "date": date, "lat" : "51.457890", "long" : "-0.975700", "custom" : false};
+    this.state = {name : "", date: date, lat : "", long : "", custom : true, location_name: 'custom', location_list : []};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleTimeChange = this.handleTimeChange.bind(this);
     this.handleLocationChange = this.handleLocationChange.bind(this);
+    this.updateLocation = this.updateLocation.bind(this);
+  }
+
+  async componentWillMount() {
+    var data = await get_locations(this.state.id)
+
+    this.setState({location_list : data.data});
+
+    if(data.data.length != 0)
+    {
+      this.updateLocation(data.data[0].name)
+    }
   }
 
   handleSubmit(event) {
@@ -59,25 +71,40 @@ class New extends React.Component {
    this.setState({ date })
   }
 
-  handleLocationChange(event) {
-    let location = event.target.value
-    if (location === "custom") 
+  updateLocation(location_name) {
+     if (location_name === "custom") 
     {
       this.setState({
-        custom: true
+        custom: true,
+        location_name: location_name,
       })
     }
     else
     {
-      this.setState({
-        custom: false,
-        lat: LOCATIONS[location][0],
-        long: LOCATIONS[location][1],
-      });
+      var location = this.state.location_list.filter((location) => location.name === location_name)
+      if(location.length != 0)
+      {
+        this.setState({
+          location_name: location_name,
+          custom: false,
+          lat: location[0].lat,
+          long: location[0].long,
+        });
+      }
     }
   }
 
+  handleLocationChange(event) {
+    let location = event.target.value
+    this.updateLocation(location)
+  }
+
   render() {
+
+    const location_options = this.state.location_list.map((location) =>
+      <option key={location._id} value={location.name}>{location.name}</option>
+    )
+
     return (
       <div>
         <h1>New</h1>
@@ -95,9 +122,8 @@ class New extends React.Component {
 
           <div>
             <label htmlFor="location">Location</label>
-            <select name="location" onChange={this.handleLocationChange}>
-              <option value="uk">UK office</option>
-              <option value="hague">Hague office</option>
+            <select name="location" onChange={this.handleLocationChange} value={this.state.location_name}>
+              {location_options}
               <option value="custom">Custom</option>
             </select>
           </div>

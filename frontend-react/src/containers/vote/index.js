@@ -40,7 +40,7 @@ class Vote extends React.Component {
     let expired = time < new Date()
 
     this.setState({name : data.data.name, voted_places : voted_places,
-      unvoted_places: unvoted_places, user : user, time_ending : dateFormat(time, "dddd, mmmm dS, yyyy, h:MM:ss TT"), expired:expired});
+      unvoted_places: unvoted_places, user : user, time_ending : dateFormat(time, "dddd, h:MM TT"), expired:expired});
   }
 
   handleVote(place) {
