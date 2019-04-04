@@ -3,6 +3,8 @@ import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { trigger_favourite_add, get_locations } from '../../library/api'
+import Footer from '../app/footer'
+
 
 class Favourite extends React.Component {
   constructor(props) {
@@ -81,28 +83,32 @@ class Favourite extends React.Component {
 
     return (
       <div>
-        <h1>Add location</h1>
+        <h1 class="standard_title">Add location</h1>
 
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" value={this.state.name} id="name" onChange={this.handleInputChange}/>
-          </div>
+        <form class="pure-form pure-form-aligned" onSubmit={this.handleSubmit}>
+          <fieldset>
+            <legend>Enter details for a new vote</legend>
+            <div class="pure-control-group">
+              <label htmlFor="name">Name</label>
+              <input type="text" name="name" value={this.state.name} id="name" onChange={this.handleInputChange}/>
+            </div>
 
-          <div>
-            <label htmlFor="location">Location</label>
-            <select name="location" onChange={this.handleLocationChange} value={this.state.location_name}>
-              {location_options}
-            </select>
-          </div>
+            <div class="pure-control-group">
+              <label htmlFor="location">Location</label>
+              <select name="location" onChange={this.handleLocationChange} value={this.state.location_name}>
+                {location_options}
+              </select>
+            </div>
 
-          <div>
-            <label htmlFor="name">Distance from (m)</label>
-            <input type="text" name="distance" value={this.state.long} id="distance" onChange={this.handleInputChange}/>
-          </div>
-
-          <input type="submit" value="Submit" />
+            <div class="pure-control-group">
+              <label htmlFor="name">Distance from (m)</label>
+              <input type="text" name="distance" value={this.state.long} id="distance" onChange={this.handleInputChange}/>
+            </div>
+          </fieldset>
+          <input class="pure-button pure-button-primary" type="submit" value="Submit" />
         </form>
+
+        <Footer />
       </div>
     );
   }

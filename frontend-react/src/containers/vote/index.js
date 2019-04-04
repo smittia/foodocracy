@@ -1,11 +1,8 @@
 import React from 'react'
-import { push } from 'connected-react-router'
-import { bindActionCreators } from 'redux'
-import { connect } from 'react-redux'
 import { get_vote, trigger_vote, trigger_unvote } from '../../library/api'
 import { get_session_id } from '../../library/session'
 import dateFormat from 'dateformat';
-
+import Footer from '../app/footer'
 
 class Vote extends React.Component {
   constructor(props) {
@@ -14,7 +11,6 @@ class Vote extends React.Component {
     let id = props.location.search.substring(1)
     this.state = {name : "", voted_places : [], unvoted_places : [], id : id, user : "", time_ending : "", expired : false};
     this.handleVote = this.handleVote.bind(this);
-    this.handleUnVote = this.handleUnVote.bind(this);
     this.updateState = this.updateState.bind(this);
   }
 
@@ -81,48 +77,32 @@ class Vote extends React.Component {
           }
         })
 
-        return (<div key={place.id}><a onClick={() => this.handleVote(place)}>{place.title} : {place.distance}m </a>{ticks}</div>)
+        return (<div class="pure-menu-item pure-menu-link" key={place.id}><a onClick={() => this.handleVote(place)}>{place.title} : {place.distance}m </a>{ticks}</div>)
       }
     )
 
     const unvotedListItems = this.state.unvoted_places.map((place) =>
-     <div key={place.id}> <a onClick={() => this.handleVote(place)}>{place.title} : {place.distance}m</a></div>
+     <div class="pure-menu-item pure-menu-link" key={place.id}> <a onClick={() => this.handleVote(place)}>{place.title} : {place.distance}m</a></div>
     )
 
     return (
       <div>
-        <h1>Vote on {this.state.name} ending at {this.state.time_ending}</h1>
+        <h1 class="standard_title">Vote on {this.state.name} ending at {this.state.time_ending}</h1>
         <h2>Vote as {this.state.user}</h2>
         {this.state.expired && <h2>EXPIRED</h2>}
 
         <h3>Voted</h3>
-        <div>{votedListItems}</div>
+        <div class="standard-container"> 
+            <div class="pure-menu-list">{votedListItems}</div>
+        </div>
         <h3>Other</h3>
-        <div>{unvotedListItems}</div>
-
-        <p>
-          <button onClick={() => this.props.returnHome()}>
-            Go back
-          </button>
-        </p>
+        <div class="standard-container"> 
+            <div class="pure-menu-list">{unvotedListItems}</div>
+        </div>
+        <Footer />
       </div>
     );
   }
 }
 
-
-const mapStateToProps = ({}) => ({})
-
-
-const mapDispatchToProps = dispatch =>
-  bindActionCreators(
-    {
-      returnHome: () => push('/')
-    },
-    dispatch
-  )
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)( Vote );
+export default Vote;

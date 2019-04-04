@@ -3,6 +3,7 @@ import { push } from 'connected-react-router'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { trigger_location_add } from '../../library/api'
+import Footer from '../app/footer'
 
 class Location extends React.Component {
   constructor(props) {
@@ -48,26 +49,32 @@ class Location extends React.Component {
 
     return (
       <div>
-        <h1>Add location</h1>
+        <h1 class="standard_title">Add location</h1>
 
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" value={this.state.name} id="name" onChange={this.handleInputChange}/>
-          </div>
+        <form class="pure-form pure-form-aligned" onSubmit={this.handleSubmit}>
+          <fieldset>
+            <legend>Locations give the starting point for new votes</legend>
+            <div class="pure-control-group">
+              <label htmlFor="name">Name</label>
+              <input type="text" name="name" value={this.state.name} id="name" onChange={this.handleInputChange}/>
+            </div>
 
-          <div>
-            <label htmlFor="name">Latitude</label>
-            <input type="text" name="lat" value={this.state.lat} id="lat" onChange={this.handleInputChange}/>
-          </div>
+            <div class="pure-control-group">
+              <label htmlFor="name">Latitude</label>
+              <input type="text" name="lat" value={this.state.lat} id="lat" onChange={this.handleInputChange}/>
+            </div>
 
-          <div>
-            <label htmlFor="name">Longitude</label>
-            <input type="text" name="long" value={this.state.long} id="long" onChange={this.handleInputChange}/>
-          </div>
+            <div class="pure-control-group">
+              <label htmlFor="name">Longitude</label>
+              <input type="text" name="long" value={this.state.long} id="long" onChange={this.handleInputChange}/>
+            </div>
 
-          <input type="submit" value="Submit" />
+          </fieldset>
+
+          <input class="pure-button pure-button-primary" type="submit" value="Submit" />
         </form>
+
+        <Footer />
       </div>
     );
   }
