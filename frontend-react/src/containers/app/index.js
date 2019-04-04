@@ -9,11 +9,11 @@ import Favourite from '../favourite'
 
 const App = () => (
   <div>
-    <header>
+    <header class="header">
       Foodocracy
     </header>
 
-    <main>
+    <main class="standard_main">
       <Route exact path="/" component={Home} />
       <Route exact path="/about-us" component={About} />
       <Route exact path="/new" component={New} />

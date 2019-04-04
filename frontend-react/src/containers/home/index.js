@@ -10,7 +10,7 @@ class Home extends React.Component {
   constructor(props) {
     super(props);
     this.props = props
-    this.state = {vote_list : [], name: "", logged_in : false, user_id : ""};
+    this.state = {vote_list : [], name: "", logged_in : true, user_id : ""};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.updateState = this.updateState.bind(this);
@@ -28,6 +28,10 @@ class Home extends React.Component {
       var data = await get_vote_list()
       console.log(data.data)
       this.setState({vote_list : data.data, logged_in: true, user_id: session_id});
+    }
+    else
+    {
+      this.setState({logged_in: false});
     }
   }
 
@@ -54,23 +58,31 @@ class Home extends React.Component {
     if(this.state.logged_in)
     {
       const listItems = this.state.vote_list.map((vote) =>
-        <div key={vote._id}><a onClick={() => this.props.changePage('vote?'+vote._id)}>{vote.name}</a></div>
+        <div class="pure-menu-item pure-menu-link" key={vote._id}><a onClick={() => this.props.changePage('vote?'+vote._id)}>{vote.name}</a></div>
       )
 
       return (
         <div>
-          <p>
-            <button onClick={() => this.props.changePage('new')}>
-              Create new vote
-            </button>
-            <button onClick={() => this.props.changePage('location')}>
-              Create new location
-            </button>
-            <button onClick={() => this.props.changePage('favourite')}>
-              Add favourite place
-            </button>
-          </p>
-          <div>{listItems}</div>
+          <div class="button-bar">
+            <div class="button-bar-panel">
+              <button class="pure-button" onClick={() => this.props.changePage('new')}>
+                Create new vote
+              </button>
+            </div>
+            <div class="button-bar-panel">
+              <button class="pure-button" onClick={() => this.props.changePage('location')}>
+                Create new location
+              </button>
+            </div>
+            <div class="button-bar-panel">
+              <button class="pure-button" onClick={() => this.props.changePage('favourite')}>
+                Add favourite place
+              </button>
+            </div>
+          </div>
+          <div class="standard-container"> 
+            <div class="pure-menu-list">{listItems}</div>
+          </div>
         </div>
       )
     }

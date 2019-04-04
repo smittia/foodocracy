@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { trigger_new, get_locations } from '../../library/api'
 import DateTimePicker from 'react-datetime-picker'
+import Footer from '../app/footer'
 
 class New extends React.Component {
   constructor(props) {
@@ -102,39 +103,44 @@ class New extends React.Component {
 
     return (
       <div>
-        <h1>New</h1>
+        <h1 class="standard_title">New</h1>
 
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <label htmlFor="name">Name</label>
-            <input type="text" name="name" value={this.state.name} id="name" onChange={this.handleInputChange}/>
-          </div>
+        <form class="pure-form pure-form-aligned" onSubmit={this.handleSubmit}>
+          <fieldset>
+            <legend>Enter details for a new vote</legend>
+            <div class="pure-control-group">
+              <label htmlFor="name">Name</label>
+              <input type="text" name="name" value={this.state.name} id="name" onChange={this.handleInputChange}/>
+            </div>
 
-          <div>
-            <label htmlFor="time">End time</label>
-            <DateTimePicker type="text" name="time" value={this.state.date} id="date" onChange={this.handleTimeChange}/>
-          </div>
+            <div class="pure-control-group">
+              <label htmlFor="time">End time</label>
+              <DateTimePicker type="text" name="time" value={this.state.date} id="date" onChange={this.handleTimeChange}/>
+            </div>
 
-          <div>
-            <label htmlFor="location">Location</label>
-            <select name="location" onChange={this.handleLocationChange} value={this.state.location_name}>
-              {location_options}
-              <option value="custom">Custom</option>
-            </select>
-          </div>
+            <div class="pure-control-group">
+              <label htmlFor="location">Location</label>
+              <select name="location" onChange={this.handleLocationChange} value={this.state.location_name}>
+                {location_options}
+                <option value="custom">Custom</option>
+              </select>
+            </div>
 
-          <div>
-            <label htmlFor="name">Latitude</label>
-            <input disabled={!this.state.custom} type="text" name="lat" value={this.state.lat} id="lat" onChange={this.handleInputChange}/>
-          </div>
+            <div class="pure-control-group">
+              <label htmlFor="name">Latitude</label>
+              <input disabled={!this.state.custom} type="text" name="lat" value={this.state.lat} id="lat" onChange={this.handleInputChange}/>
+            </div>
 
-          <div>
-            <label htmlFor="name">Longitude</label>
-            <input disabled={!this.state.custom} type="text" name="long" value={this.state.long} id="long" onChange={this.handleInputChange}/>
-          </div>
+            <div class="pure-control-group">
+              <label htmlFor="name">Longitude</label>
+              <input disabled={!this.state.custom} type="text" name="long" value={this.state.long} id="long" onChange={this.handleInputChange}/>
+            </div>
 
-          <input type="submit" value="Submit" />
+          </fieldset>
+          <input class="pure-button pure-button-primary" type="submit" value="Submit" />
         </form>
+
+        <Footer />
       </div>
     );
   }
