@@ -18,7 +18,7 @@ class Location extends React.Component {
 
     let props = this.props
     let update_function = function (response) {
-      console.log("hi");
+      console.log("successfully updated location");
 
       // redirect to main page
       props.returnHome()

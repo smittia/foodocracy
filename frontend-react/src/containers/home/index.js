@@ -57,9 +57,13 @@ class Home extends React.Component {
 
     if(this.state.logged_in)
     {
-      const listItems = this.state.vote_list.map((vote) =>
-        <div class="pure-menu-item pure-menu-link" key={vote._id}><a onClick={() => this.props.changePage('vote?'+vote._id)}>{vote.name}</a></div>
-      )
+      let listItems = []
+      if(this.state.vote_list)
+      {
+        listItems = this.state.vote_list.map((vote) =>
+          <div class="pure-menu-item pure-menu-link" key={vote._id}><a onClick={() => this.props.changePage('vote?'+vote._id)}>{vote.name}</a></div>
+        )
+      }
 
       return (
         <div>
