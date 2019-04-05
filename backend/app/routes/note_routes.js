@@ -60,7 +60,7 @@ module.exports = function(app, db) {
 						title: favourite.name,
 						distance: favourite.distance,
 						favourite: true,
-						id: favourite._id,
+						id: favourite._id.toString(),
 						votes:[]
 					})
 				}
