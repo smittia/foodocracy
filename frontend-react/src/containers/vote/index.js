@@ -95,17 +95,19 @@ class Vote extends React.Component {
       <div>
         <h1 class="standard_title">Vote on {this.state.name} ending at {this.state.time_ending}</h1>
         <h2>Vote as {this.state.user}</h2>
-        {this.state.expired && <h2>EXPIRED</h2>}
+        {this.state.expired && <h2>FINISHED</h2>}
 
         <h3>Voted</h3>
         <div class="standard-container"> 
             <div class="pure-menu-list">{votedListItems}</div>
         </div>
-        <h3>Other</h3>
-        <div class="standard-container"> 
-            <div class="pure-menu-list">{unvotedListItems}</div>
-        </div>
+        {!this.state.expired && 
+          <div><h3>Other</h3>
+          <div class="standard-container"> 
+              <div class="pure-menu-list">{unvotedListItems}</div>
+          </div></div>}
         <Footer />
+        
       </div>
     );
   }
