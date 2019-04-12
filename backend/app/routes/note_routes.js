@@ -32,11 +32,48 @@ module.exports = function(app, db) {
 
 	const favourite = { name: req.body.name, location: req.body.location, distance:req.body.distance };
 
-    db.collection('favourites').insert(favourite, (err, result) => {
+    db.collection('favourites').insert(favourite, (err, result_start) => {
       if (err) { 
         res.send({ 'error': 'An error has occurred' }); 
       } else {
-        res.send(result.ops[0]);
+
+
+        successes = [result_start.ops[0]]
+        db.collection('votes').find({}).toArray(function(err, vote_list) {
+          if (err) {
+            res.send({'error':'An error has occurred'});
+          } else {
+
+            vote_list.forEach(function(vote, index) {
+              if(new Date(vote.time_ending) > new Date())
+              {
+                // add new favourite on to live poll
+                vote.places.push(
+                {
+                  title: favourite.name,
+                  distance: favourite.distance,
+                  favourite: true,
+                  id: result_start.ops[0]._id.toString(),
+                  votes:[]
+                })
+
+                // push back to the database
+                var newvalues = { $set: {places: vote.places} };
+                let details = { '_id': vote._id };
+                db.collection("votes").updateOne(details, newvalues, function(err, item) {
+                  if (err) {
+                    console.log(err)
+                      res.send({'error':'An error has occurred'});
+                  } else {
+                      successes.push(item);
+                  }
+                });
+              }
+            })
+          }
+        });
+
+        res.send(successes);
       }
     });
   });
@@ -107,29 +144,29 @@ module.exports = function(app, db) {
 
   app.post('/addVote', (req, res) => {
     const details = { '_id': new ObjectID(req.body.vote_id) };
-	db.collection('votes').findOne(details, (err, item) => {
+	  db.collection('votes').findOne(details, (err, item) => {
       if (err) {
         res.send({'error':'An error has occurred'});
       } else {
       	console.log(item)
 
         item.places.forEach(function (place, index) {
-			if(place.id === req.body.restaurant_id &&
-				!place.votes.includes(req.body.user_id))
-			{
-				place.votes.push(req.body.user_id)
-			}
-		})
+    			if(place.id === req.body.restaurant_id &&
+    				!place.votes.includes(req.body.user_id))
+    			{
+    				place.votes.push(req.body.user_id)
+    			}
+		    })
 
-		var newvalues = { $set: {places: item.places} };
-		db.collection("votes").updateOne(details, newvalues, function(err, item) {
-		    if (err) {
-		    	console.log(err)
-		        res.send({'error':'An error has occurred'});
-		    } else {
-		        res.send(item);
-		    }
-	  	});
+		    var newvalues = { $set: {places: item.places} };
+	     	db.collection("votes").updateOne(details, newvalues, function(err, item) {
+  		    if (err) {
+  		    	console.log(err)
+  		        res.send({'error':'An error has occurred'});
+  		    } else {
+  		        res.send(item);
+  		    }
+  	  	});
       } 
     });
   });

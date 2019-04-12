@@ -55,14 +55,37 @@ class Home extends React.Component {
 
   render() {
 
+    let create_vote_item = (vote) => {
+      return (
+        <div class="pure-menu-item pure-menu-link" key={vote._id}>
+          <a onClick={() => this.props.changePage('vote?'+vote._id)}>{vote.name}</a>
+        </div>
+      )
+    }
+
+
+
     if(this.state.logged_in)
     {
-      let listItems = []
+      let listItemsCurrent = []
+      let listItemsCompleted = []
       if(this.state.vote_list)
       {
-        listItems = this.state.vote_list.map((vote) =>
-          <div class="pure-menu-item pure-menu-link" key={vote._id}><a onClick={() => this.props.changePage('vote?'+vote._id)}>{vote.name}</a></div>
-        )
+        listItemsCurrent = this.state.vote_list.map((vote) => {
+          if( new Date(vote.time_ending) > new Date()){
+            return create_vote_item(vote)
+          } else {
+            return false
+          }
+        })
+
+        listItemsCompleted = this.state.vote_list.map((vote) => {
+          if( new Date(vote.time_ending) <= new Date()){
+            return create_vote_item(vote)
+          } else {
+            return false
+          }
+        })
       }
 
       return (
@@ -84,8 +107,11 @@ class Home extends React.Component {
               </button>
             </div>
           </div>
-          <div class="standard-container"> 
-            <div class="pure-menu-list">{listItems}</div>
+          <div class="standard-container">
+            <h2>Current polls:</h2>
+            <div class="pure-menu-list">{listItemsCurrent}</div>
+            <h2>Finished polls:</h2>
+            <div class="pure-menu-list">{listItemsCompleted}</div>
           </div>
         </div>
       )
