@@ -77,12 +77,18 @@ class Vote extends React.Component {
           }
         })
 
-        return (<div class="pure-menu-item pure-menu-link" key={place.id}><a onClick={() => this.handleVote(place)}>{place.title} : {place.distance}m </a>{ticks}</div>)
+        return (
+        <div class="pure-menu-item pure-menu-link" key={place.id}>
+          <a disabled={this.state.expired} onClick={() => this.handleVote(place)}>{place.title} : {place.distance}m </a>{ticks}
+        </div>
+        )
       }
     )
 
     const unvotedListItems = this.state.unvoted_places.map((place) =>
-     <div class="pure-menu-item pure-menu-link" key={place.id}> <a onClick={() => this.handleVote(place)}>{place.title} : {place.distance}m</a></div>
+     <div class="pure-menu-item pure-menu-link" key={place.id}> 
+        <a className={place.favourite ? 'favourite' : null} disabled={this.state.expired} onClick={() => this.handleVote(place)}>{place.title} : {place.distance}m</a>
+     </div>
     )
 
     return (

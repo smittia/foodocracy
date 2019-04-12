@@ -1,3 +1,11 @@
+.favourite {
+    font-weight: bold;
+}
+
+.favourite::before {
+    content: "☆";
+}
+
 /*csslint adjoining-classes: false, box-model:false*/
 .pure-menu {
     box-sizing: border-box;
