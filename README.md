@@ -1,13 +1,13 @@
 # foodocracy
 Voter for Friday food
 
-### start backend:
-npm install
+### start backend
+    $ npm install
 
-npm start
+    $ npm start
 
 ### start frontend
 
-yarn
+    $ yarn
 
-yarn start
+    $ yarn start
